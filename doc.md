@@ -28,7 +28,7 @@ Run the following command(s) to complete your set up:
 
 Bob's your uncle!
 
-**note** Please make sure that you are using Java Version 8 and not Java Version 11.  Version 11 has been known to cause issues with Selenium and Polymer Storybook
+**note:** Please make sure that you are using Java Version 8 and not Java Version 11.  Version 11 has been known to cause issues with Selenium and Polymer Storybook
 
 ## Install wct-eyes
 
@@ -45,7 +45,7 @@ OR
 Now that that's done, go ahead and locate the wct.conf.json file.  Open it, navigate to the plugins property and insert the following object:
 
 `"eyes": {
-	"disabled": false
+	"disabled": false,
 	"serverURL": "https://gannetteyes.applitools.com/"
 }`
 
@@ -53,5 +53,51 @@ Now that that's done, go ahead and locate the wct.conf.json file.  Open it, navi
 
 Implementing Polymer Storybook support for pre-existing tests is a simple process, and should take you no longer than ten minutes on your first attempt.  I will be refactoring a test to implement support below.
 
-We will use the _ test as an example.
+We will be using nav_search_bar.test.html test as an example.  Open the file in your text editor, it is located here: 
 
+elements -> nav -> nav-search-bar -> nav-search-bar.test.html
+
+![Example](nav-search-bar-test_ex1.png)
+
+Below `suite`, add the following:
+```
+suite('<nav-search-bar> fire', function() {
+    this.timeout(60000);
+```
+ We need a timeout in order for visual validation to execute properly.  Next, we need to initialize the `eyes` class. `eyes` allows you to programmatically define and run your visual UI tests. The class provides many functions that execute different functions like running checkpoints, test execution, tearing down the eyes class, and more.  You can find a full list [here](https://applitools.com/docs/api/eyes-sdk/index-gen/class-eyes-selenium-java.html).  `eyes` will be initialized next to `myEl`.
+
+ `var myEl, eyes;`
+
+ Before our `setup()` function and below our initialized variables, we need to include a `suiteSetup` function to define our `eyes` class.  It will look like this:
+
+```
+suiteSetup(function() {
+    eyes = new (typeof Eyes !== 'undefined' ? Eyes : parent.Eyes)(); 
+});
+```
+
+So this is what we have so far:
+
+![Example2](nav-search-bar-test_ex2.png)
+
+Next, inside our `setup` function, we will be adding a special `return` statement.  Note that you should use suite name as application name and test name as test name
+
+`return eyes.open(this.test.parent.title, this.currentTest.title);`
+
+And now we move on to the test itself.  In order to get our visual results that we need, we will be utilizing the `checkWindow()` method, which you can read more about [here](https://applitools.com/docs/api/eyes-sdk/classes-gen/class_eyes/method-eyes-checkwindow-selenium-java.html).
+
+![Example3](nav-search-bar-test_ex3.png)
+
+Lastly, we need to include the `tearDown()` function to close our session with `eyes`.
+
+```
+teardown(function () {
+       return eyes.abortIfNotClosed(); // used to close session if an error occurred in a test
+     });
+```
+
+I hope this assists you with uding Polymer Storybook!  For more information, check out the following links:
+
+* [wct-eyes Repository](https://github.com/applitools/wct-eyes)
+* [Eyes Class Documentation](https://applitools.com/docs/api/eyes-sdk/index-gen/class-eyes-selenium-java.html)
+* [wct-eyes Example Repository](https://github.com/applitools/wct-eyes-example)
