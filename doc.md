@@ -96,7 +96,7 @@ teardown(function () {
      });
 ```
 
-I hope this assists you with uding Polymer Storybook!  For more information, check out the following links:
+I hope this assists you with using Polymer Storybook!  For more information, check out the following links:
 
 * [wct-eyes Repository](https://github.com/applitools/wct-eyes)
 * [Eyes Class Documentation](https://applitools.com/docs/api/eyes-sdk/index-gen/class-eyes-selenium-java.html)
